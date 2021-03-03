@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react'
 import { TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { AppName, PrimaryColor } from '../Constants'
+import { APP_NAME, PRIMARY_COLOR } from '../Constants'
 import { Input } from 'react-native-elements';
+import { useSelector, useDispatch } from 'react-redux'
+import * as configActions from '../actions/config.action'
 
 const SettingScreen = (props) => {
+
+    const configReducer = useSelector(({configReducer}) => configReducer)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         setNavigationOption()
@@ -12,9 +17,9 @@ const SettingScreen = (props) => {
 
     const setNavigationOption = () => {
         props.navigation.setOptions({
-            title: AppName,
+            title: APP_NAME,
             headerStyle: {
-                backgroundColor: PrimaryColor,
+                backgroundColor: PRIMARY_COLOR,
             },
             headerTintColor: '#fff',
             headerBackTitle: ' ',
@@ -45,9 +50,11 @@ const SettingScreen = (props) => {
                     <Icon
                         name='language'
                         size={24}
-                        color={PrimaryColor}
+                        color={PRIMARY_COLOR}
                     />
                 }
+                value={configReducer.ip}
+                onChangeText={(text)=>dispatch(configActions.addIp(text))}
             />
             <Input
                 label='Port'
@@ -56,9 +63,11 @@ const SettingScreen = (props) => {
                     <Icon
                         name='bolt'
                         size={24}
-                        color={PrimaryColor}
+                        color={PRIMARY_COLOR}
                     />
                 }
+                value={configReducer.port}
+                onChangeText={(text)=>dispatch(configActions.addPort(text))}
             />
             <Input
                 label='Channel'
@@ -67,9 +76,11 @@ const SettingScreen = (props) => {
                     <Icon
                         name='layers'
                         size={24}
-                        color={PrimaryColor}
+                        color={PRIMARY_COLOR}
                     />
                 }
+                value={configReducer.channel}
+                onChangeText={(text)=>dispatch(configActions.addChannel(text))}
             />
         </ScrollView>
     )
