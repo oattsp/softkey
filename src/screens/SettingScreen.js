@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { AppName, PrimaryColor } from './Constants'
+import { AppName, PrimaryColor } from '../Constants'
 import { Input } from 'react-native-elements';
 
 const SettingScreen = (props) => {
