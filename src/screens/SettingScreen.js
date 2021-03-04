@@ -1,42 +1,46 @@
 import React, { useEffect } from 'react'
-import { TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet, View, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { APP_NAME, PRIMARY_COLOR } from '../Constants'
-import { Input } from 'react-native-elements';
-import { useSelector, useDispatch } from 'react-redux'
+import { Input, Button } from 'react-native-elements'
 import * as configActions from '../actions/config.action'
 
-const SettingScreen = (props) => {
+const SettingScreen = ({ config, dispatch, navigation }) => {
 
-    const configReducer = useSelector(({configReducer}) => configReducer)
-    const dispatch = useDispatch()
+    // const configReducer = useSelector(({ configReducer }) => configReducer)
+    // const dispatch = useDispatch()
 
     useEffect(() => {
         setNavigationOption()
     }, [])
 
     const setNavigationOption = () => {
-        props.navigation.setOptions({
+        navigation.setOptions({
             title: APP_NAME,
             headerStyle: {
                 backgroundColor: PRIMARY_COLOR,
             },
             headerTintColor: '#fff',
             headerBackTitle: ' ',
-            headerRight: () => {
-                return (
-                    <TouchableOpacity
-                        activeOpacity={0.1}
-                        onPress={() => alert("Hey I'm Oat.")}
-                        style={{ padding: 10 }}>
-                        <Icon
-                            name="save"
-                            size={20}
-                            color="#fff"
-                        />
-                    </TouchableOpacity>
-                );
-            },
+        })
+    }
+
+    const saveChanges = () => {
+        configActions.saveChanges(config.ip, config.port, config.channel).then((result) => {
+            Alert.alert(
+                result.title,
+                result.message,
+                [
+                    {
+                        text: "OK", onPress: () => {
+                            if (result.status) {
+                                alert('Go to home page')
+                            }
+                        }
+                    }
+                ],
+                { cancelable: false }
+            );
         })
     }
 
@@ -44,7 +48,7 @@ const SettingScreen = (props) => {
         <ScrollView style={styles.container}>
             <Input
                 label='IP Address'
-                labelStyle={{marginTop: 10}}
+                labelStyle={{ marginTop: 10 }}
                 placeholder='IP ADDRESS'
                 leftIcon={
                     <Icon
@@ -53,10 +57,11 @@ const SettingScreen = (props) => {
                         color={PRIMARY_COLOR}
                     />
                 }
-                value={configReducer.ip}
-                onChangeText={(text)=>dispatch(configActions.addIp(text))}
+                value={config.ip}
+                onChangeText={(text) => dispatch(configActions.addIp(text))}
             />
             <Input
+                keyboardType="number-pad"
                 label='Port'
                 placeholder='PORT'
                 leftIcon={
@@ -66,10 +71,13 @@ const SettingScreen = (props) => {
                         color={PRIMARY_COLOR}
                     />
                 }
-                value={configReducer.port}
-                onChangeText={(text)=>dispatch(configActions.addPort(text))}
+                value={config.port}
+                onChangeText={(text) => dispatch(configActions.addPort(text))}
+                errorMessage={config.error_port_message}
+                renderErrorMessage={config.error_port}
             />
             <Input
+                keyboardType="number-pad"
                 label='Channel'
                 placeholder='CHANNEL'
                 leftIcon={
@@ -79,9 +87,26 @@ const SettingScreen = (props) => {
                         color={PRIMARY_COLOR}
                     />
                 }
-                value={configReducer.channel}
-                onChangeText={(text)=>dispatch(configActions.addChannel(text))}
+                value={config.channel}
+                onChangeText={(text) => dispatch(configActions.addChannel(text))}
+                errorMessage={config.error_channel_message}
+                renderErrorMessage={config.error_channel}
             />
+            <View style={styles.buttonSave}>
+                <Button
+                    onPress={saveChanges}
+                    icon={
+                        <View style={styles.iconButton}>
+                            <Icon
+                                name="save"
+                                size={25}
+                                color="white"
+                            />
+                        </View>
+                    }
+                    title="Save Changes"
+                />
+            </View>
         </ScrollView>
     )
 }
@@ -90,6 +115,13 @@ const SettingScreen = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    buttonSave: {
+        paddingHorizontal: 20,
+        paddingTop: 5
+    },
+    iconButton: {
+        marginEnd: 10
     }
 })
 
