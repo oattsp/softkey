@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 
-const HomeScreen = () => {
+const TabHoldQ = () => {
     return (
         <View>
-            <Text>Home Screen</Text>
+            <Text>Queue Hold</Text>
         </View>
     )
 }
 
-export default HomeScreen
+export default TabHoldQ

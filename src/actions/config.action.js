@@ -1,4 +1,5 @@
-import { ACTION_ADD_CHANNEL, ACTION_ADD_IP, ACTION_ADD_PORT, ACTION_ERROR_CHANNEL, ACTION_ERROR_CHANNEL_MESSAGE, ACTION_ERROR_PORT, ACTION_ERROR_PORT_MESSAGE } from "../Constants";
+import { ACTION_ADD_CHANNEL, ACTION_ADD_IP, ACTION_ADD_PORT, ACTION_ERROR_CHANNEL, ACTION_ERROR_CHANNEL_MESSAGE, ACTION_ERROR_PORT, ACTION_ERROR_PORT_MESSAGE, KEY_CHANNEL, KEY_IP_ADDRESS, KEY_PORT } from "../Constants";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const setStateToAddIp = (payload) => ({
     type: ACTION_ADD_IP,
@@ -93,6 +94,24 @@ export const addChannel = (payload) => {
     }
 }
 
+const addConfigToStorage = async (ipAddress, port, channel) => {
+    await AsyncStorage.setItem(KEY_IP_ADDRESS, ipAddress)
+    await AsyncStorage.setItem(KEY_PORT, port)
+    await AsyncStorage.setItem(KEY_CHANNEL, channel)
+}
+
+export const getConfigFromStorage = () => {
+    return async (dispatch) => {
+        let ipAddress = await AsyncStorage.getItem(KEY_IP_ADDRESS)
+        let port = await AsyncStorage.getItem(KEY_PORT)
+        let channel = await AsyncStorage.getItem(KEY_CHANNEL)
+        
+        dispatch(setStateToAddIp(ipAddress))
+        dispatch(setStateToAddPort(port))
+        dispatch(setStateToAddChannel(channel))
+    }
+}
+
 export const saveChanges = (ipAddress, port, channel) => {
     // validate ip address, port, channel is not empty
     if (ipAddress == '' || port == '' || channel == '') {
@@ -100,7 +119,7 @@ export const saveChanges = (ipAddress, port, channel) => {
             resolve({
                 status: false,
                 title: 'Error',
-                message: 'please check your input value.'
+                message: 'Please check your input value.'
             })
         })
     }
@@ -111,7 +130,7 @@ export const saveChanges = (ipAddress, port, channel) => {
             resolve({
                 status: false,
                 title: 'Error',
-                message: 'please check your input value.'
+                message: 'Please check your input value.'
             })
         })
     }
@@ -122,7 +141,7 @@ export const saveChanges = (ipAddress, port, channel) => {
             resolve({
                 status: false,
                 title: 'Error',
-                message: 'please check your input value.'
+                message: 'Please check your input value.'
             })
         })
     }
@@ -133,16 +152,18 @@ export const saveChanges = (ipAddress, port, channel) => {
             resolve({
                 status: false,
                 title: 'Error',
-                message: 'please check your input value.'
+                message: 'Please check your input value.'
             })
         })
     }
+
+    addConfigToStorage(ipAddress, port, channel)
 
     return new Promise((resolve, reject)=> {
         resolve({
             status: true,
             title: 'Success',
-            message: 'save complete!!.'
+            message: 'Save complete!!'
         })
     })
 }

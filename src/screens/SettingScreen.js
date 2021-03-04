@@ -7,9 +7,6 @@ import * as configActions from '../actions/config.action'
 
 const SettingScreen = ({ config, dispatch, navigation }) => {
 
-    // const configReducer = useSelector(({ configReducer }) => configReducer)
-    // const dispatch = useDispatch()
-
     useEffect(() => {
         setNavigationOption()
     }, [])
@@ -34,7 +31,7 @@ const SettingScreen = ({ config, dispatch, navigation }) => {
                     {
                         text: "OK", onPress: () => {
                             if (result.status) {
-                                alert('Go to home page')
+                                navigation.goBack()
                             }
                         }
                     }
@@ -94,6 +91,7 @@ const SettingScreen = ({ config, dispatch, navigation }) => {
             />
             <View style={styles.buttonSave}>
                 <Button
+                    buttonStyle={styles.buttonStyle}
                     onPress={saveChanges}
                     icon={
                         <View style={styles.iconButton}>
@@ -122,6 +120,10 @@ const styles = StyleSheet.create({
     },
     iconButton: {
         marginEnd: 10
+    },
+    buttonStyle: {
+        backgroundColor: 'tomato',
+        color: '#fff'
     }
 })
 
